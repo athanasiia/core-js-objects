@@ -142,8 +142,27 @@ function makeImmutable(obj) {
  *    makeWord({ a: [0, 1], b: [2, 3], c: [4, 5] }) => 'aabbcc'
  *    makeWord({ H:[0], e: [1], l: [2, 3, 8], o: [4, 6], W:[5], r:[7], d:[9]}) => 'HelloWorld'
  */
-function makeWord(/* lettersObject */) {
-  throw new Error('Not implemented');
+function makeWord(lettersObject) {
+  let resLength;
+  Object.entries(lettersObject).forEach((entry) => {
+    const [key] = entry;
+    const value = lettersObject[key];
+    value.forEach((index) => {
+      if (index > resLength) {
+        resLength = index;
+      }
+    });
+  });
+
+  const res = new Array(resLength);
+  Object.entries(lettersObject).forEach((entry) => {
+    const [key, value] = entry;
+    value.forEach((index) => {
+      res[index] = key;
+    });
+  });
+
+  return res.join('');
 }
 
 /**
@@ -160,8 +179,50 @@ function makeWord(/* lettersObject */) {
  *    sellTickets([25, 25, 50]) => true
  *    sellTickets([25, 100]) => false (The seller does not have enough money to give change.)
  */
-function sellTickets(/* queue */) {
-  throw new Error('Not implemented');
+function payChange(bill, totalBills) {
+  const totalBillsCopy = {};
+  Object.assign(totalBillsCopy, totalBills);
+
+  switch (bill) {
+    case 25:
+      break;
+    case 50:
+      if (totalBillsCopy[25] !== 0) {
+        totalBillsCopy[25] -= 1;
+      } else return -1;
+      break;
+    case 100:
+      if (totalBillsCopy[25] === 0) return -1;
+      if (totalBillsCopy[50] === 0 && totalBillsCopy[25] >= 3) {
+        totalBillsCopy[25] -= 3;
+      } else if (totalBillsCopy[50] > 0 && totalBillsCopy[25] > 0) {
+        totalBillsCopy[50] -= 1;
+        totalBillsCopy[25] -= 1;
+      } else return -1;
+      break;
+    default:
+  }
+
+  return totalBillsCopy;
+}
+
+function sellTickets(queue) {
+  let totalBills = {
+    25: 0,
+    50: 0,
+    100: 0,
+  };
+  let res = true;
+
+  queue.forEach((bill) => {
+    if (payChange(bill, totalBills) === -1) {
+      res = false;
+    }
+    totalBills = payChange(bill, totalBills);
+    totalBills[bill] += 1;
+  });
+
+  return res;
 }
 
 /**
@@ -177,8 +238,14 @@ function sellTickets(/* queue */) {
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  return {
+    width,
+    height,
+    getArea() {
+      return width * height;
+    },
+  };
 }
 
 /**
@@ -191,8 +258,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 /**
